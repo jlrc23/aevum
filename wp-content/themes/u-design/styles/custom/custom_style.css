@@ -3,7 +3,7 @@ body { font-family:'Arial'; }
 body { font-size:12px; }
 h1, h2, h3, h4, h5, h6, #slogan, .single-post-categories { font-family:'Arial'; }
 #top-elements { height:90px; }
-#logo h1 a, #logo .site-name a { background:transparent url( ../style1/images/logo.png ) no-repeat 0 100%; width:175px; height:108px; }       
+#logo h1 a, #logo .site-name a { background:transparent url( http://aevum.com.mx/img/logoAevum.png ) no-repeat 0 100%; width:175px; height:108px; }       
 #slogan { top:100px; left:0px; }
 #slogan { font-size:12px; }
 .js_on .cufon-on #slogan { font-size:14px; }

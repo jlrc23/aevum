@@ -2,11 +2,11 @@
 body { font-family:'Arial'; }
 body { font-size:12px; }
 h1, h2, h3, h4, h5, h6, #slogan, .single-post-categories { font-family:'Arial'; }
-#top-elements { height:90px; }
-#logo h1 a, #logo .site-name a { background:transparent url( http://aevum.com.mx/img/logoAevum.png ) no-repeat 0 100%; width:175px; height:108px; }       
-#slogan { top:100px; left:0px; }
-#slogan { font-size:12px; }
-.js_on .cufon-on #slogan { font-size:14px; }
+#top-elements { height:100px; }
+#logo h1 a, #logo .site-name a { background:transparent url( http://www.aevum.com.mx/wp-content/uploads/2013/10/logoAevum.png ) no-repeat 0 100%; width:148px; height:126px; }       
+#slogan { top:50px; left:160px; }
+#slogan { font-size:14px; }
+.js_on .cufon-on #slogan { font-size:16px; }
 #navigation-menu { font-family:'Arial'; }
 #navigation-menu { font-size:14px; }
 h1 {font-size:1.883em !important; }

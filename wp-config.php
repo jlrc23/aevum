@@ -19,10 +19,10 @@
 define('DB_NAME', 'aevum'); //
 
 /** MySQL database username */
-define('DB_USER', 'root'); // usrAevum
+define('DB_USER', 'usrAevum'); // usrAevum
 
 /** MySQL database password */
-define('DB_PASSWORD', ''); // ISI2013aev
+define('DB_PASSWORD', 'ISI2013aev'); // ISI2013aev
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');

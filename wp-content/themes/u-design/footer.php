@@ -109,7 +109,7 @@
 
 	<div id="footer-bg">
 		<div id="footer" class="container_24 footer-top">
-		    <div id="footer_text" class="grid_20">
+		    <div id="footer_text" class="grid_24">
 			<div>
 <?php			    echo do_shortcode( $udesign_options['copyright_message'] );
 			    if( $udesign_options['show_wp_link_in_footer'] ) :
@@ -126,9 +126,9 @@
 <?php			    endif; ?>
 			</div>
 		    </div>
-		    <div class="back-to-top">
+		    <!-- <div class="back-to-top">
 			<a href="#top"><?php esc_html_e('Back to Top', 'udesign'); ?></a>
-		    </div>
+		    </div> -->
 		</div>
 	</div>
 

@@ -240,6 +240,18 @@ class GFFormsModel {
         return $results[0];
     }
 
+    public static function unserialize($string){
+
+        if(is_serialized($string)){
+            $obj = @unserialize($string);
+        }
+        else{
+            $obj = json_decode($string, true);
+        }
+
+        return $obj;
+    }
+
     public static function get_form_meta($form_id){
         global $wpdb;
 
@@ -252,12 +264,12 @@ class GFFormsModel {
         $form_row = $wpdb->get_row($wpdb->prepare("SELECT display_meta, notifications FROM {$table_name} WHERE form_id=%d", $form_id), ARRAY_A);
 
         //loading main form object
-        $form = maybe_unserialize($form_row["display_meta"]);
+        $form = self::unserialize($form_row["display_meta"]);
         if(!$form)
             return null;
 
         //loading notifications
-        $form["notifications"] = maybe_unserialize($form_row["notifications"]);
+        $form["notifications"] = self::unserialize($form_row["notifications"]);
 
         //copying some form variables down to fields for easier access
         $page_number = 1;
@@ -307,9 +319,9 @@ class GFFormsModel {
                                         WHERE id in({$ids})", ARRAY_A);
 
         foreach ($results as &$result) {
-            $form = maybe_unserialize($result["display_meta"]);
-            $form['confirmations'] = maybe_unserialize($result["confirmations"]);
-            $form['notifications'] = maybe_unserialize($result["notifications"]);
+            $form = self::unserialize($result["display_meta"]);
+            $form['confirmations'] = self::unserialize($result["confirmations"]);
+            $form['notifications'] = self::unserialize($result["notifications"]);
             $result = $form;
         }
 
@@ -2402,7 +2414,7 @@ class GFFormsModel {
         if(!rgblank($value)){
 
             $value = apply_filters("gform_save_field_value", $value, $lead, $field, $form);
-            $truncated_value = mb_substr($value, 0, GFORMS_MAX_FIELD_LENGTH);
+            $truncated_value = GFCommon::safe_substr($value, 0, GFORMS_MAX_FIELD_LENGTH);
 
             $lead_detail_id = self::get_lead_detail_id($current_fields, $input_id);
             if($lead_detail_id > 0){
@@ -2414,7 +2426,7 @@ class GFFormsModel {
                 $has_long_field = intval($wpdb->get_var($sql)) > 0;
 
                 //delete long field if value has been shortened
-                if($has_long_field && mb_strlen($value) <= GFORMS_MAX_FIELD_LENGTH){
+                if($has_long_field && GFCommon::safe_strlen($value) <= GFORMS_MAX_FIELD_LENGTH){
                     $sql = $wpdb->prepare("DELETE FROM $lead_detail_long_table WHERE lead_detail_id=%d", $lead_detail_id);
                     $wpdb->query($sql);
                 }
@@ -2423,7 +2435,7 @@ class GFFormsModel {
                     $wpdb->update($lead_detail_long_table, array("value" => $value), array("lead_detail_id" => $lead_detail_id), array("%s"), array("%d"));
                 }
                 //insert long field (value has been increased)
-                else if(mb_strlen($value) > GFORMS_MAX_FIELD_LENGTH){
+                else if(GFCommon::safe_strlen($value) > GFORMS_MAX_FIELD_LENGTH){
                     $wpdb->insert($lead_detail_long_table, array("lead_detail_id" => $lead_detail_id, "value" => $value), array("%d", "%s"));
                 }
 
@@ -2431,7 +2443,7 @@ class GFFormsModel {
             else{
                 $wpdb->insert($lead_detail_table, array("lead_id" => $lead["id"], "form_id" => $form["id"], "field_number" => $input_id, "value" => $truncated_value), array("%d", "%d", "%F", "%s"));
 
-                if(mb_strlen($value) > GFORMS_MAX_FIELD_LENGTH){
+                if(GFCommon::safe_strlen($value) > GFORMS_MAX_FIELD_LENGTH){
 
                     //read newly created lead detal id
                     $lead_detail_id = $wpdb->insert_id;
@@ -2575,6 +2587,9 @@ class GFFormsModel {
             $counter++;
         }
 
+        //Remove "." from the end if file does not have a file extension
+        $target_path = trim($target_path, '.');
+        
         //creating url
         $target_url = str_replace($target_root, $target_root_url, $target_path);
 
@@ -3315,7 +3330,10 @@ class GFFormsModel {
         $id = uniqid();
 
         // convert confirmation to new confirmations format
-        $confirmation = $form['confirmation'];
+        $confirmation = rgar($form,'confirmation');
+        if(empty($confirmation))
+            $confirmation = array();
+
         $confirmation['id'] = $id;
         $confirmation['name'] = __('Default Confirmation', 'gravityforms');
         $confirmation['isDefault'] = true;
@@ -3352,7 +3370,7 @@ class GFFormsModel {
         $results = $wpdb->get_results($sql, ARRAY_A);
         $confirmations = rgars($results, '0/confirmations');
 
-        self::$_confirmations[$form_id] = $confirmations ? maybe_unserialize($confirmations) : array();
+        self::$_confirmations[$form_id] = $confirmations ? self::unserialize($confirmations) : array();
 
         return self::$_confirmations[$form_id];
     }

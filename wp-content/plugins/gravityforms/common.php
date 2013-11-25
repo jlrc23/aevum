@@ -1,7 +1,7 @@
 <?php
 class GFCommon{
 
-    public static $version = "1.7.10";
+    public static $version = "1.7.12";
     public static $tab_index = 1;
     public static $errors = array();
 
@@ -166,7 +166,7 @@ class GFCommon{
             return $text;
 
         $middle = intval($max_length / 2);
-        return substr($text, 0, $middle) . "..." . substr($text, strlen($text) - $middle, $middle);
+        return self::safe_substr($text, 0, $middle) . "..." . self::safe_substr($text, strlen($text) - $middle, $middle);
     }
 
     public static function is_invalid_or_empty_email($email){
@@ -801,6 +801,7 @@ class GFCommon{
 
                     case "fileupload" :
                         $value = str_replace(" ", "%20", $value);
+
                     break;
 
                     case "post_image" :
@@ -1967,7 +1968,11 @@ class GFCommon{
     }
 
     public static function selection_display($value, $field, $currency="", $use_text=false){
-        $ary = explode("|", $value);
+        if (is_array($value)){
+			return "";
+        }
+
+       	$ary = explode("|", $value);
         $val = $ary[0];
         $price = count($ary) > 1 ? $ary[1] : "";
 
@@ -4952,7 +4957,7 @@ class GFCommon{
             $choices = array_merge($choices, $field['choices']);
 
         }
-
+        
         if(empty($choices))
             $choices[] = array('text' => 'You must select at least one category.', 'value' => '');
 
@@ -5266,6 +5271,22 @@ class GFCommon{
         if( self::requires_gf_vars() ){
             echo '<script type="text/javascript">' . self::gf_vars(false) . '</script>';
         }
+    }
+
+    public static function safe_strlen($string){
+
+        if(function_exists("mb_strlen"))
+            return mb_strlen($string);
+        else
+            return strlen($string);
+
+    }
+
+    public static function safe_substr($string, $start, $length = null){
+        if(function_exists("mb_substr"))
+            return mb_substr($string, $start, $length);
+        else
+            return substr($string, $start, $length);
     }
 
 }
